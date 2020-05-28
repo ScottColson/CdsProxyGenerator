@@ -1,7 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xrm.Sdk.Metadata;
 
@@ -34,6 +31,10 @@ namespace CCLLC.CDS.ProxyGenerator.Parser
             fields = fields.OrderBy(f => f.DisplayName).ToList();
 
             entityModel.Fields = fields;
+
+            entityModel.RelationshipsOneToMany = metadata.OneToManyRelationships.Select(r => RelationshipParser.Parse(entityModel, eRelationshipType.OneToMany, r)).OrderBy(r => r.DisplayName);
+            entityModel.RelationshipsManyToOne = metadata.ManyToOneRelationships.Select(r => RelationshipParser.Parse(entityModel, eRelationshipType.ManyToOne, r)).OrderBy(r => r.DisplayName);
+            entityModel.RelationshipsManyToMany = metadata.ManyToManyRelationships.Select(r => RelationshipParser.Parse(entityModel, eRelationshipType.ManyToMany, r)).OrderBy(r => r.DisplayName);
 
             return entityModel;
         }

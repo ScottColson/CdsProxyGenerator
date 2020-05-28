@@ -40,8 +40,8 @@
     <Reference Include="CCLLCCDSSdkData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=123e29a4f4f84d01, processorArchitecture=MSIL">
       <HintPath>..\packages\CCLLC.CDS.Sdk.Data.1.1.1\lib\net462\CCLLCCDSSdkData.dll</HintPath>
     </Reference>
-    <Reference Include="CcllcCdsSdkMetadata, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CCLLC.CDS.Sdk.Metadata.0.0.8\lib\CcllcCdsSdkMetadata.dll</HintPath>
+    <Reference Include="CcllcCdsSdkMetadata, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7946ee95ac82e5b3, processorArchitecture=MSIL">
+      <HintPath>..\packages\CCLLC.CDS.Sdk.Metadata.0.0.9\lib\CcllcCdsSdkMetadata.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Crm.Sdk.Proxy, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CrmSdk.CoreAssemblies.9.0.2.20\lib\net462\Microsoft.Crm.Sdk.Proxy.dll</HintPath>
@@ -99,10 +99,13 @@
     <Compile Include="Extensions\DoubleExtensions.cs" />
     <Compile Include="Extensions\EntityMetadataExtensions.cs" />
     <Compile Include="Extensions\IEnumerableStringExtensions.cs" />
-    <Compile Include="Interface\eDataType.cs" />
-    <Compile Include="Interface\eTemplalteLanguage.cs" />
+    <Compile Include="Enums\eDataType.cs" />
+    <Compile Include="Enums\eRelationshipType.cs" />
+    <Compile Include="Enums\eTemplalteLanguage.cs" />
+    <Compile Include="Extensions\RelationshipMetadataExtensions.cs" />
     <Compile Include="Interface\ITypeConverter.cs" />
     <Compile Include="Interface\ITypeConverterFactory.cs" />
+    <Compile Include="Model\RelationshipModel.cs" />
     <Compile Include="NameHelper.cs" />
     <Compile Include="Interface\ICDSMetadataService.cs" />
     <Compile Include="Interface\ICodeBlockManager.cs" />
@@ -127,6 +130,7 @@
     <Compile Include="Parser\FieldParser.cs" />
     <Compile Include="Parser\MessageParser.cs" />
     <Compile Include="Parser\CSharpTypeConverter.cs" />
+    <Compile Include="Parser\RelationshipParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyGeneratorService.cs" />
     <Compile Include="ProxyModelService.cs" />

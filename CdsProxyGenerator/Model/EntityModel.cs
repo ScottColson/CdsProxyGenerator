@@ -24,14 +24,14 @@ namespace CCLLC.CDS.ProxyGenerator.Model
                 SetPrimaryKey();
             }
         }
-        public FieldModel PrimaryKey { get; internal set; }
-        public Enum[] Enums { get; }
+        public FieldModel PrimaryKey { get; private set; }
 
-       //public MappingRelationship1N[] RelationshipsOneToMany { get; set; }
-        //public MappingRelationshipN1[] RelationshipsManyToOne { get; set; }
-        //public MappingRelationshipN1[] RelationshipsManyToMany { get; set; }
 
-       
+        public IEnumerable<RelationshipModel> RelationshipsOneToMany { get; internal set; }
+        public IEnumerable<RelationshipModel> RelationshipsManyToOne { get; internal set; }
+        public IEnumerable<RelationshipModel> RelationshipsManyToMany { get; internal set; }
+
+
         public EntityModel(
             ProxyModel parent,
             string logicalName, 
@@ -47,7 +47,6 @@ namespace CCLLC.CDS.ProxyGenerator.Model
             this.PluralName = pluralName;
             this.PrimaryKeyAttribute = primaryKey;
         }
-
 
         private void SetPrimaryKey()
         {

@@ -38,7 +38,7 @@ namespace CCLLC.CDS.ProxyGenerator.T4
         public IList<string> StandardImports => new string[]
         {
             "System",
-            "System.Linq",
+            "System.Linq",            
             "CCLLC.CDS.ProxyGenerator.Model"
         };
             

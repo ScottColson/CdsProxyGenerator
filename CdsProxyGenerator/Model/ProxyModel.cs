@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Xrm.Sdk;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,11 @@ namespace CCLLC.CDS.ProxyGenerator.Model
         internal string GetGlobalEnumType(string name)
         {
             return this.GlobalOptionSets.Where(e => e.DisplayName == name).Select(e => e.Type).FirstOrDefault();
+        }
+
+        internal EntityModel GetEntityModelByLogicalName(string name)
+        {
+            return this.Entities.Where(e => e.LogicalName == name).FirstOrDefault() ?? new EntityModel(this,"Entity","Entity","Entity","","");
         }
     }
 }
