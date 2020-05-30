@@ -12,6 +12,7 @@ namespace CCLLC.CDS.ProxyGenerator
     public class CDSMetadataService : MessagingBase, ICDSMetadataService
     {
         protected readonly ISettings Settings;
+        private IEnumerable<EntityMetadata> EntityMetadataCollection;
         
         public CDSMetadataService(ISettings settings) : base()
         {
@@ -29,7 +30,7 @@ namespace CCLLC.CDS.ProxyGenerator
             var metadata = GetAllEntityMetadata(orgService);
             metadata = FilterEntityMetadata(metadata);
 
-            RaiseMessage(string.Format("Retrieved metadata for {0} entities", metadata.Count()));
+            RaiseMessage(string.Format("Processed metadata for {0} entities", metadata.Count()));
 
             return metadata;
         }
@@ -60,14 +61,19 @@ namespace CCLLC.CDS.ProxyGenerator
 
         private IEnumerable<EntityMetadata> GetAllEntityMetadata(IOrganizationService orgService)
         {
-            RaiseMessage("Gathering Entity Metadata...");
+            if (EntityMetadataCollection is null)
+            {
+                RaiseMessage("Gathering Entity Metadata...");
 
-            OrganizationRequest request = new OrganizationRequest("RetrieveAllEntities");
+                OrganizationRequest request = new OrganizationRequest("RetrieveAllEntities");
 
-            request.Parameters["EntityFilters"] = EntityFilters.Relationships | EntityFilters.Attributes | EntityFilters.Entity;
-            request.Parameters["RetrieveAsIfPublished"] = true;
+                request.Parameters["EntityFilters"] = EntityFilters.Relationships | EntityFilters.Attributes | EntityFilters.Entity;
+                request.Parameters["RetrieveAsIfPublished"] = true;
 
-            return orgService.Execute(request).Results["EntityMetadata"] as EntityMetadata[];
+                EntityMetadataCollection = orgService.Execute(request).Results["EntityMetadata"] as EntityMetadata[];
+            }
+
+            return EntityMetadataCollection;
         }
 
         private IEnumerable<EntityMetadata> FilterEntityMetadata(IEnumerable<EntityMetadata> entityMetadata)
