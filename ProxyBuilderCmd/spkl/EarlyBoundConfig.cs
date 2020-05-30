@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace CCLLC.CDS.ProxyBuilderCmd.Spkl
 {
-    public class EarlyBoundTypeConfig : ISettings
+    public class EarlyBoundTypeConfig : IConfigSettings
     {
         public string profile;
         public string entities;
@@ -36,6 +36,8 @@ namespace CCLLC.CDS.ProxyBuilderCmd.Spkl
         eEndpoint ISettings.TargetEndPoint => eEndpoint.OrgService;
 
         eTemplalteLanguage ISettings.TemplateLanguage => eTemplalteLanguage.Csharp;
+
+        string IConfigSettings.ConfigurationPath { get; set; }
 
         private IEnumerable<string> SplitList(string value)
         {

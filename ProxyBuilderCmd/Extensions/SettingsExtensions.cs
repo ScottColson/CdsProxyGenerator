@@ -1,17 +1,17 @@
-﻿using CCLLC.CDS.ProxyGenerator;
-using System.IO;
+﻿using System.IO;
 
 
 namespace CCLLC.CDS.ProxyBuilderCmd.Extensions
 {
     public static class SettingsExtensions
     {
-        public static ISettings TemplateRelativeTo(this ISettings settings, string path)
+
+        public static IConfigSettings SetTemplateRelativeTo(this IConfigSettings settings, string path)
         {
             if (Path.IsPathRooted(settings.TemplateFilePath))
                 return settings;
 
-            return new Settings
+            return new ConfigSettings
             {
                 ActionsToExclude = settings.ActionsToExclude,
                 ActionsToInclude = settings.ActionsToInclude,
@@ -21,16 +21,17 @@ namespace CCLLC.CDS.ProxyBuilderCmd.Extensions
                 TemplateFilePath = Path.Combine(path, settings.TemplateFilePath),
                 TemplateLanguage = settings.TemplateLanguage,
                 Namespace = settings.Namespace,
-                OutputPath = settings.OutputPath
+                OutputPath = settings.OutputPath,
+                ConfigurationPath = settings.ConfigurationPath
             };
         }
 
-        public static ISettings OutputRelativeTo(this ISettings settings, string path)
+        public static IConfigSettings SetOutputRelativeTo(this IConfigSettings settings, string path)
         {
             if (Path.IsPathRooted(settings.OutputPath))
                 return settings;
 
-            return new Settings
+            return new ConfigSettings
             {
                 ActionsToExclude = settings.ActionsToExclude,
                 ActionsToInclude = settings.ActionsToInclude,
@@ -40,7 +41,8 @@ namespace CCLLC.CDS.ProxyBuilderCmd.Extensions
                 TemplateFilePath = settings.TemplateFilePath,
                 TemplateLanguage = settings.TemplateLanguage,
                 Namespace = settings.Namespace,
-                OutputPath = Path.Combine(path, settings.OutputPath)
+                OutputPath = Path.Combine(path, settings.OutputPath),
+                ConfigurationPath = settings.ConfigurationPath
             };
         }
     }

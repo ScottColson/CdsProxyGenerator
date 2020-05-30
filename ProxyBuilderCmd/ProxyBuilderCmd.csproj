@@ -105,7 +105,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandLineArgs.cs" />
+    <Compile Include="ConfigSettings.cs" />
     <Compile Include="Extensions\SettingsExtensions.cs" />
+    <Compile Include="Interfaces\IConfigSettings.cs" />
     <Compile Include="Interfaces\IProxySettingsService.cs" />
     <Compile Include="ProxySettingsService.cs" />
     <Compile Include="ServiceContainer.cs" />

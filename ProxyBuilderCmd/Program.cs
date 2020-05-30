@@ -13,7 +13,7 @@ using CmdLine;
 using CCLLC.CDS.ProxyGenerator;
 using CCLLC.CDS.ProxyBuilderCmd;
 using CCLLC.CDS.ProxyBuilderCmd.Extensions;
-
+using System.CodeDom;
 
 class Program
 {
@@ -128,6 +128,8 @@ class Program
         {
 
             //var trace = new TraceLogger();
+            var executingDirectory = Environment.CurrentDirectory;
+            var searchPath = Path.Combine(executingDirectory, "..\\..");
 
             if (arguments.Connection == null)
             {
@@ -142,7 +144,7 @@ class Program
                     // This statement is required to enable early-bound type support.
                     serviceProxy.EnableProxyTypes();
                     serviceProxy.Timeout = new TimeSpan(1, 0, 0);
-                    BuildProxy(serviceProxy);
+                    BuildProxy(serviceProxy, searchPath);
                 }
             }
 
@@ -172,7 +174,7 @@ class Program
                         // trace.WriteLine("Not Ready {0} {1}", serviceProxy.LastCrmError, serviceProxy.LastCrmException);
                     }
 
-                    BuildProxy(serviceProxy);
+                    BuildProxy(serviceProxy, searchPath);
                 }
             }
         }
@@ -304,61 +306,57 @@ class Program
     }
 
 
-    private static void BuildProxy(IOrganizationService organizationService)
+    private static void BuildProxy(IOrganizationService organizationService, string searchPath)
     {        
-        var executingDirectory = Environment.CurrentDirectory;
-        var searchPath = Path.Combine(executingDirectory, "..\\..");
+       
 
         var settings = GetSettingsFromProxyConfigFile(searchPath) 
             ??  GetSettingsFromSpklConfigFile(searchPath) 
-            ?? throw new Exception("Unable to load settings.");         
-        
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.WriteLine();
-        Console.WriteLine(string.Format("Using Proxy Template {0}", settings.TemplateFilePath));
-        Console.WriteLine(string.Format("Output Path is {0}", settings.OutputPath));
-        Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.Gray;
+            ?? throw new Exception("Unable to load settings.");
 
-        var metadataService = new CDSMetadataService(settings, organizationService);
-        metadataService.Message += Service_Message;
-        var entityMetadata = metadataService.GetEntityMetadata();
+        foreach (var setting in settings)
+        {
+            
+            var metadataService = ServiceContainer.Resolve<ICDSMetadataServiceFactory>().Create(setting);
+            metadataService.Message += MessageHandler;
+            var entityMetadata = metadataService.GetEntityMetadata(organizationService);
+            var sdkMessageMetadata = metadataService.GetMessageMetadata(organizationService);
+            metadataService.Message -= MessageHandler;
 
-        var sdkMessageMetadata = metadataService.GetMessageMetadata();
+            var typeConverterFactory = ServiceContainer.Resolve<ITypeConverterFactory>();
+            var typeConverter = typeConverterFactory.Create(setting.TemplateLanguage);
 
-        var typeConverterFactory = ServiceContainer.Resolve<ITypeConverterFactory>();
-        var typeConverter = typeConverterFactory.Create(settings.TemplateLanguage);
+            var modelService = new ProxyModelService(typeConverter);
+            modelService.Message += MessageHandler;
+            var model = modelService.BuildModel(entityMetadata, sdkMessageMetadata);
+            modelService.Message -= MessageHandler;
 
-        var modelService = new ProxyModelService(typeConverter);
-        modelService.Message += Service_Message;
-        var model = modelService.BuildModel(entityMetadata, sdkMessageMetadata);
-
-        var generator = new ProxyGeneratorService(settings);
-        generator.Message += Service_Message;
-        
-        generator.BuildProxies(model);
+            var generator = new ProxyGeneratorService(setting);
+            generator.Message += MessageHandler;       
+            generator.BuildProxies(model);
+            generator.Message -= MessageHandler;
+        }
     }
 
-    private static ISettings GetSettingsFromProxyConfigFile(string searchPath)
+    private static IEnumerable<ISettings> GetSettingsFromProxyConfigFile(string searchPath)
     {
         var settings = ServiceContainer.Resolve<IProxySettingsService>().LoadSettings(searchPath);
 
-        return settings?
-           .TemplateRelativeTo(searchPath)
-           .OutputRelativeTo(searchPath);
+        return settings?.Select(s => s
+           .SetTemplateRelativeTo(s.ConfigurationPath)
+           .SetOutputRelativeTo(s.ConfigurationPath));
     }
 
-    private static ISettings GetSettingsFromSpklConfigFile(string searchPath)
-    {
-        
+    private static IEnumerable<ISettings> GetSettingsFromSpklConfigFile(string searchPath)
+    {        
         var settings = ServiceContainer.Resolve<ISpklSettingsService>().LoadSettings(searchPath);
                
-        return settings?
-            .TemplateRelativeTo(searchPath)
-            .OutputRelativeTo(searchPath);       
+        return settings?.Select(s => s
+            .SetTemplateRelativeTo(s.ConfigurationPath)
+            .SetOutputRelativeTo(s.ConfigurationPath));       
     }
 
-    private static void Service_Message(object sender, MessageEventArgs e)
+    private static void MessageHandler(object sender, MessageEventArgs e)
     {
         Console.WriteLine(e.Message);
     }

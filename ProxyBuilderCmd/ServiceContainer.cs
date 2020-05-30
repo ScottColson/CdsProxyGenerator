@@ -19,7 +19,8 @@ namespace CCLLC.CDS.ProxyBuilderCmd
             IocContainer.Implement<ISpklSettingsService>().Using<Spkl.SpklSettingsService>().AsSingleInstance();
             IocContainer.Implement<IProxySettingsService>().Using<ProxySettingsService>().AsSingleInstance();
             IocContainer.Implement<IDirectoryService>().Using<DirectoryService>().AsSingleInstance();
-            IocContainer.Implement<ITypeConverterFactory>().Using<TypeConverterFactory>();       
+            IocContainer.Implement<ITypeConverterFactory>().Using<TypeConverterFactory>();
+            IocContainer.Implement<ICDSMetadataServiceFactory>().Using<CDSMetadataServiceFactory>().AsSingleInstance();
         }
 
         public static T Resolve<T>()

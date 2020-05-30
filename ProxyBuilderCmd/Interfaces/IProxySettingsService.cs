@@ -1,10 +1,9 @@
-﻿
-using CCLLC.CDS.ProxyGenerator;
+﻿using System.Collections.Generic;
 
 namespace CCLLC.CDS.ProxyBuilderCmd
 {
     interface IProxySettingsService
     {
-        ISettings LoadSettings(string path);
+        IEnumerable<IConfigSettings> LoadSettings(string path);
     }
 }

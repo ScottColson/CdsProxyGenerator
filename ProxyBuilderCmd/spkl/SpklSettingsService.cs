@@ -18,9 +18,9 @@ namespace CCLLC.CDS.ProxyBuilderCmd.Spkl
             this.DirectoryService = directoryService ?? throw new ArgumentNullException("directoryService");
         }
 
-        public ISettings LoadSettings(string path)
+        public IEnumerable<IConfigSettings> LoadSettings(string path)
         {
-            List<string> configfilePaths = null;
+            IEnumerable<string> configfilePaths = null;
 
             // search for the spkl.json configuration file.
             if (path.EndsWith("spkl.json") && File.Exists(path))
@@ -29,15 +29,26 @@ namespace CCLLC.CDS.ProxyBuilderCmd.Spkl
             }
             else
             {
-                configfilePaths = DirectoryService.Search(path, "spkl.json");
+                configfilePaths = DirectoryService.Search(path, "spkl.json")
+                    .Where(f => f != null && !Regex.IsMatch(f, @"packages\\spkl[0-9|.]*\\tools"));                    
             }
 
-            var configFile = configfilePaths.Where(f => f != null && !Regex.IsMatch(f, @"packages\\spkl[0-9|.]*\\tools")).FirstOrDefault();
+            var settings = new List<IConfigSettings>();
 
-            var config = Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigFile>(File.ReadAllText(configFile));
-            config.filePath = Path.GetDirectoryName(configFile);
+            foreach(var file in configfilePaths)
+            {
+                var spklConfig = Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigFile>(File.ReadAllText(file));
+                var setting = spklConfig.earlyboundtypes.FirstOrDefault() as IConfigSettings;
 
-            return config?.earlyboundtypes.FirstOrDefault() as ISettings;
+                if(setting != null)
+                {
+                    setting.ConfigurationPath = Path.GetDirectoryName(file);
+                    settings.Add(setting);
+                }
+            }
+
+            // return null if settings collection is empty
+            return settings.Count > 0 ? settings : null;
 
         }
     }

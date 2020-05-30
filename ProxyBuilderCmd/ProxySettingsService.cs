@@ -16,7 +16,7 @@ namespace CCLLC.CDS.ProxyBuilderCmd
             this.DirectoryService = directoryService ?? throw new ArgumentNullException("directoryService");
         }
 
-        public ISettings LoadSettings(string folder)
+        public IEnumerable<IConfigSettings> LoadSettings(string folder)
         {
             return null;
         }
