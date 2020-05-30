@@ -198,7 +198,7 @@ namespace CCLLC.CDS.ProxyGenerator.T4
             if (string.IsNullOrEmpty(Settings.OutputPath))
                 return Path.GetDirectoryName(GetRootedTemplatePath());
 
-            return Path.GetDirectoryName(Path.GetFullPath(Settings.OutputPath));            
+            return Path.GetFullPath(Settings.OutputPath);            
         }
 
         public new void RaiseMessage(string message, string extendedMessage = "", eMessageType messageType = eMessageType.Info)

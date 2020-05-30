@@ -41,7 +41,6 @@ namespace CCLLC.CDS.ProxyGenerator
         }
 
        
-
         private IEnumerable<EnumModel> GetGlobalOptionsFromEntities(IEnumerable<EntityModel> entities)
         {
             var globalOptionSets = new List<EnumModel>();

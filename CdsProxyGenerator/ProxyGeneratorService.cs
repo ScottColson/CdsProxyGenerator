@@ -28,7 +28,7 @@ namespace CCLLC.CDS.ProxyGenerator
             Host host = new Host(Settings, session);
             host.Message += (sender, args) => { RaiseMessage(args.Message); };
 
-            string input = File.ReadAllText(Settings.TemplateFilePath);
+            string input = File.ReadAllText(host.TemplateFile);
 
             var engine = new Mono.TextTemplating.TemplatingEngine();
 
