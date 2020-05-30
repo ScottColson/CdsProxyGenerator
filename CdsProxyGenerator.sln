@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "T4Templates", "T4Templates"
 	ProjectSection(SolutionItems) = preProject
 		T4Templates\CdsProxy.tt = T4Templates\CdsProxy.tt
 		T4Templates\MinimalCdsProxy.tt = T4Templates\MinimalCdsProxy.tt
+		T4Templates\ProxyTemplate.tt = T4Templates\ProxyTemplate.tt
 		T4Templates\Template - Copy.tt = T4Templates\Template - Copy.tt
 	EndProjectSection
 EndProject

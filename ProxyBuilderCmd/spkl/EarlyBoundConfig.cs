@@ -1,0 +1,45 @@
+﻿using CCLLC.CDS.ProxyGenerator;
+using CCLLC.CDS.Sdk.Metadata;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+
+namespace CCLLC.CDS.ProxyBuilderCmd.Spkl
+{
+    public class EarlyBoundTypeConfig : ISettings
+    {
+        public string profile;
+        public string entities;
+        public string actions;
+        public string filename;
+        public string classNamespace;
+
+        public string templatePath;
+
+
+        string ISettings.Namespace => classNamespace ?? "Proxy";
+
+        string ISettings.TemplateFilePath => templatePath ?? "proxytemplate.tt";
+
+        string ISettings.OutputPath => Path.GetDirectoryName(filename);
+
+        IEnumerable<string> ISettings.EntitiesToExclude => new string[] { "*" };
+
+        IEnumerable<string> ISettings.EntitiesToInclude => SplitList(entities);
+
+        IEnumerable<string> ISettings.ActionsToInclude => SplitList(actions);
+
+        IEnumerable<string> ISettings.ActionsToExclude => new string[] { "*" };
+
+        eEndpoint ISettings.TargetEndPoint => eEndpoint.OrgService;
+
+        eTemplalteLanguage ISettings.TemplateLanguage => eTemplalteLanguage.Csharp;
+
+        private IEnumerable<string> SplitList(string value)
+        {
+            return value?.Split(',').Select(v => v.Trim()) ?? new string[] { };
+        }
+    }
+}
