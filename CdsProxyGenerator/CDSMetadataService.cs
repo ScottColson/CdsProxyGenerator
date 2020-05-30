@@ -12,15 +12,13 @@ namespace CCLLC.CDS.ProxyGenerator
     public class CDSMetadataService : MessagingBase, ICDSMetadataService
     {
         protected readonly ISettings Settings;
-        protected readonly IOrganizationService OrgService;
-
-        public CDSMetadataService(ISettings settings, IOrganizationService orgService) : base()
+        
+        public CDSMetadataService(ISettings settings) : base()
         {
-            this.Settings = settings ?? throw new ArgumentNullException("settings");
-            this.OrgService = orgService ?? throw new ArgumentNullException("orgService");
+            this.Settings = settings ?? throw new ArgumentNullException("settings");           
         }
 
-        public IEnumerable<EntityMetadata> GetEntityMetadata()
+        public IEnumerable<EntityMetadata> GetEntityMetadata(IOrganizationService orgService)
         {
             if(Settings.EntitiesToInclude is null || Settings.EntitiesToInclude.Count() == 0)
             {
@@ -28,7 +26,7 @@ namespace CCLLC.CDS.ProxyGenerator
                 return new List<EntityMetadata>();
             }
 
-            var metadata = GetAllEntityMetadata();
+            var metadata = GetAllEntityMetadata(orgService);
             metadata = FilterEntityMetadata(metadata);
 
             RaiseMessage(string.Format("Retrieved metadata for {0} entities", metadata.Count()));
@@ -36,7 +34,7 @@ namespace CCLLC.CDS.ProxyGenerator
             return metadata;
         }
 
-        public IEnumerable<SdkMessageMetadata> GetMessageMetadata()
+        public IEnumerable<SdkMessageMetadata> GetMessageMetadata(IOrganizationService orgService)
         {    
             if(Settings.ActionsToInclude is null || Settings.ActionsToInclude.Count() == 0)
             {
@@ -47,20 +45,20 @@ namespace CCLLC.CDS.ProxyGenerator
             var service = new SdkMessageMetadataService(Settings.TargetEndPoint);
             RaiseMessage("Getting Sdk MessageNames...");
            
-            var names = service.GetSdkMessageNames(this.OrgService);
+            var names = service.GetSdkMessageNames(orgService);
 
             names = FilterSdkMessageNames(names);
 
             RaiseMessage("Getting Sdk MessageMetadata...");
 
-            var messageMetadata = service.GetSdkMessageMetadata(this.OrgService, names);
+            var messageMetadata = service.GetSdkMessageMetadata(orgService, names);
 
             RaiseMessage(string.Format("Retrieved metadata for {0} Sdk Messages...", messageMetadata.Count()));
 
             return messageMetadata;
         }
 
-        private IEnumerable<EntityMetadata> GetAllEntityMetadata()
+        private IEnumerable<EntityMetadata> GetAllEntityMetadata(IOrganizationService orgService)
         {
             RaiseMessage("Gathering Entity Metadata...");
 
@@ -69,7 +67,7 @@ namespace CCLLC.CDS.ProxyGenerator
             request.Parameters["EntityFilters"] = EntityFilters.Relationships | EntityFilters.Attributes | EntityFilters.Entity;
             request.Parameters["RetrieveAsIfPublished"] = true;
 
-            return this.OrgService.Execute(request).Results["EntityMetadata"] as EntityMetadata[];
+            return orgService.Execute(request).Results["EntityMetadata"] as EntityMetadata[];
         }
 
         private IEnumerable<EntityMetadata> FilterEntityMetadata(IEnumerable<EntityMetadata> entityMetadata)
