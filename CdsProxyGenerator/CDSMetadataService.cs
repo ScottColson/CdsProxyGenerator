@@ -8,20 +8,43 @@ using Microsoft.Xrm.Sdk.Metadata;
 namespace CCLLC.CDS.ProxyGenerator
 { 
     using CCLLC.CDS.Sdk.Metadata;
+    using CCLLC.Core;
+    using System.Windows.Controls.Primitives;
 
     public class CDSMetadataService : MessagingBase, ICDSMetadataService
     {
-        protected readonly ISettings Settings;
-        private IEnumerable<EntityMetadata> EntityMetadataCollection;
-        
-        public CDSMetadataService(ISettings settings) : base()
+        static class CacheKey
         {
-            this.Settings = settings ?? throw new ArgumentNullException("settings");           
+            public static string SkdMessageNames = "SdkMessageNames";
+            public static string EntityMetadata = "EntityMetadata";
+        }
+
+        protected ICache cache;
+        protected readonly ISettings settings;
+
+        private ISdkMessageMetadataService _sdkMessageMetadataService;
+        private ISdkMessageMetadataService SdkMessageMetadataService
+        {
+            get
+            {
+                if (_sdkMessageMetadataService is null)
+                {
+                    _sdkMessageMetadataService = new SdkMessageMetadataService(settings.TargetEndPoint);
+                }
+
+                return _sdkMessageMetadataService;
+            }
+        }
+        
+        public CDSMetadataService(ISettings settings, ICache cache) : base()
+        {
+            this.settings = settings ?? throw new ArgumentNullException("settings");
+            this.cache = cache;
         }
 
         public IEnumerable<EntityMetadata> GetEntityMetadata(IOrganizationService orgService)
         {
-            if(Settings.EntitiesToInclude is null || Settings.EntitiesToInclude.Count() == 0)
+            if(settings.EntitiesToInclude is null || settings.EntitiesToInclude.Count() == 0)
             {
                 RaiseMessage("No entities requested...");
                 return new List<EntityMetadata>();
@@ -37,52 +60,63 @@ namespace CCLLC.CDS.ProxyGenerator
 
         public IEnumerable<SdkMessageMetadata> GetMessageMetadata(IOrganizationService orgService)
         {    
-            if(Settings.ActionsToInclude is null || Settings.ActionsToInclude.Count() == 0)
+            if(settings.ActionsToInclude is null || settings.ActionsToInclude.Count() == 0)
             {
                 RaiseMessage("No Sdk Messages requested...");
                 return new List<SdkMessageMetadata>();
             }
 
-            var service = new SdkMessageMetadataService(Settings.TargetEndPoint);
-            RaiseMessage("Getting Sdk MessageNames...");
-           
-            var names = service.GetSdkMessageNames(orgService);
-
+            var names = GetAllSdkMessageNames(orgService);
+            
             names = FilterSdkMessageNames(names);
 
-            RaiseMessage("Getting Sdk MessageMetadata...");
+            var messageMetadata = GetMessageMetadataFromCache(names);
+            
+            // filter to names that are not in the cached metadata
+            names = names.Where(n => !messageMetadata.Where(c => c.Name == n).Any());
 
-            var messageMetadata = service.GetSdkMessageMetadata(orgService, names);
+            if (names.Count() > 0)
+            {
+                RaiseMessage("Getting Sdk MessageMetadata...");
 
-            RaiseMessage(string.Format("Retrieved metadata for {0} Sdk Messages...", messageMetadata.Count()));
+                var retrievedMetadata = SdkMessageMetadataService.GetSdkMessageMetadata(orgService, names);
+
+                AddMessageMetadataToCache(retrievedMetadata);
+
+                messageMetadata.AddRange(retrievedMetadata);
+
+                RaiseMessage(string.Format("Retrieved metadata for {0} Sdk Messages...", messageMetadata.Count()));
+            }
 
             return messageMetadata;
         }
 
         private IEnumerable<EntityMetadata> GetAllEntityMetadata(IOrganizationService orgService)
         {
-            if (EntityMetadataCollection is null)
-            {
-                RaiseMessage("Gathering Entity Metadata...");
+            if (cache.Exists(CacheKey.EntityMetadata))
+                return cache.Get<EntityMetadata[]>(CacheKey.EntityMetadata);
 
-                OrganizationRequest request = new OrganizationRequest("RetrieveAllEntities");
+            RaiseMessage("Gathering Entity Metadata...");
 
-                request.Parameters["EntityFilters"] = EntityFilters.Relationships | EntityFilters.Attributes | EntityFilters.Entity;
-                request.Parameters["RetrieveAsIfPublished"] = true;
+            OrganizationRequest request = new OrganizationRequest("RetrieveAllEntities");
 
-                EntityMetadataCollection = orgService.Execute(request).Results["EntityMetadata"] as EntityMetadata[];
-            }
+            request.Parameters["EntityFilters"] = EntityFilters.Relationships | EntityFilters.Attributes | EntityFilters.Entity;
+            request.Parameters["RetrieveAsIfPublished"] = true;
 
-            return EntityMetadataCollection;
+            var entityMetadata = orgService.Execute(request).Results["EntityMetadata"] as EntityMetadata[];
+
+            cache.Add(CacheKey.EntityMetadata, entityMetadata, new TimeSpan(0,5,0));
+
+            return entityMetadata;
         }
 
         private IEnumerable<EntityMetadata> FilterEntityMetadata(IEnumerable<EntityMetadata> entityMetadata)
         {
             RaiseMessage("Filtering Entity Metadata...");
 
-            var entitiesToInclude = new MatchEvaluator(Settings.EntitiesToInclude);
+            var entitiesToInclude = new MatchEvaluator(settings.EntitiesToInclude);
 
-            var entitiesToExclude = new MatchEvaluator(Settings.EntitiesToExclude);
+            var entitiesToExclude = new MatchEvaluator(settings.EntitiesToExclude);
 
             var filteredMetadata = entityMetadata
                 .Where(r => ShouldIncludeMetadata(r.LogicalName, entitiesToInclude, entitiesToExclude))
@@ -91,13 +125,27 @@ namespace CCLLC.CDS.ProxyGenerator
             return filteredMetadata;
         }
 
+        private IEnumerable<string> GetAllSdkMessageNames(IOrganizationService orgService)
+        {
+            if (cache.Exists(CacheKey.SkdMessageNames))
+                return cache.Get<IEnumerable<string>>(CacheKey.SkdMessageNames);
+
+
+            RaiseMessage("Loading Sdk MessageNames to cache...");
+            
+            var names = SdkMessageMetadataService.GetSdkMessageNames(orgService);
+            cache.Add(CacheKey.SkdMessageNames, names, 300);
+            
+            return names;
+        }
+
         private IEnumerable<string> FilterSdkMessageNames(IEnumerable<string> messageNames)
         {
             RaiseMessage("Filtering Sdk Message Names...");
 
-            var actionsToInclude = new MatchEvaluator(Settings.ActionsToInclude);
+            var actionsToInclude = new MatchEvaluator(settings.ActionsToInclude);
 
-            var actionsToExclude = new MatchEvaluator(Settings.ActionsToExclude);
+            var actionsToExclude = new MatchEvaluator(settings.ActionsToExclude);
 
             var filteredNames = messageNames
                 .Where(r => ShouldIncludeMetadata(r, actionsToInclude, actionsToExclude))
@@ -105,6 +153,32 @@ namespace CCLLC.CDS.ProxyGenerator
 
             return filteredNames;
         }
+
+        private void AddMessageMetadataToCache(IEnumerable<SdkMessageMetadata> metadata)
+        {
+            foreach(var m in metadata)
+            {
+                var key = string.Format("{0}.{1}", settings.TargetEndPoint, m.Name);
+                cache.Add(key, m, new TimeSpan(0, 5, 0));
+            }
+        }
+
+        private List<SdkMessageMetadata> GetMessageMetadataFromCache(IEnumerable<string> messageNames)
+        {
+            var items = new List<SdkMessageMetadata>();
+
+            foreach(var name in messageNames)
+            {
+                var key = string.Format("{0}.{1}", settings.TargetEndPoint, name);
+                if (cache.Exists(key))
+                {
+                    items.Add(cache.Get<SdkMessageMetadata>(key));
+                }
+            }
+
+            return items;
+        }
+        
 
         private bool ShouldIncludeMetadata(string logicalName, IMatchEvaluator entitiesToInclude, IMatchEvaluator entitiesToExclude)
         {
