@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace CCLLC.CDS.ProxyBuilderCmd.Spkl
 {
-    public class EarlyBoundTypeConfig : IConfigSettings
+    public class SpklEarlyBoundTypeConfig : IConfigSettings
     {
         public string profile;
         public string entities;

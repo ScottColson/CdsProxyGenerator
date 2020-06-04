@@ -10,13 +10,17 @@ using Microsoft.Xrm.Sdk.Client;
 using Microsoft.Xrm.Tooling.Connector;
 using Microsoft.Crm.Sdk.Samples;
 using CmdLine;
+using CCLLC.Core;
 using CCLLC.CDS.ProxyGenerator;
 using CCLLC.CDS.ProxyBuilderCmd;
 using CCLLC.CDS.ProxyBuilderCmd.Extensions;
-using System.CodeDom;
+
+using CCLLC.CDS.ProxyBuilderCmd.Spkl;
 
 class Program
 {
+    private static IReadOnlyIocContainer Container;
+
     static void Main(string[] args)
     {
         Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -28,6 +32,8 @@ class Program
 
         try
         {
+            Init();
+
             arguments = CommandLine.Parse<CommandLineArgs>();
 
             Run(arguments);
@@ -122,12 +128,24 @@ class Program
         Console.ForegroundColor = ConsoleColor.Gray;
     }
 
+    private static void Init()
+    {
+        var container = new IocContainer();
+
+        container.Implement<ICache>().Using<AssemblyCache>().AsSingleInstance();
+        container.Implement<ISpklSettingsService>().Using<SpklSettingsService>().AsSingleInstance();
+        container.Implement<IProxySettingsService>().Using<ProxySettingsService>().AsSingleInstance();
+        container.Implement<IDirectoryService>().Using<DirectoryService>().AsSingleInstance();
+        container.Implement<ITypeConverterFactory>().Using<TypeConverterFactory>();
+        container.Implement<ICDSMetadataServiceFactory>().Using<CDSMetadataServiceFactory>().AsSingleInstance();
+
+        Container = container;
+    }
+
     private static void Run(CommandLineArgs arguments)
     {
         try
         {
-
-            //var trace = new TraceLogger();
             var executingDirectory = Environment.CurrentDirectory;
             var searchPath = Path.Combine(executingDirectory, "..\\..");
 
@@ -169,11 +187,7 @@ class Program
                     }
 
                     serviceProxy.OrganizationServiceProxy.Timeout = new TimeSpan(1, 0, 0);
-                    if (!serviceProxy.IsReady)
-                    {
-                        // trace.WriteLine("Not Ready {0} {1}", serviceProxy.LastCrmError, serviceProxy.LastCrmException);
-                    }
-
+                    
                     BuildProxy(serviceProxy, searchPath);
                 }
             }
@@ -307,23 +321,22 @@ class Program
 
 
     private static void BuildProxy(IOrganizationService organizationService, string searchPath)
-    {        
-       
-
+    {   
         var settings = GetSettingsFromProxyConfigFile(searchPath) 
             ??  GetSettingsFromSpklConfigFile(searchPath) 
             ?? throw new Exception("Unable to load settings.");
 
+        Console.WriteLine("Found {0} settings files...", settings.Count());
+
         foreach (var setting in settings)
-        {
-            
-            var metadataService = ServiceContainer.Resolve<ICDSMetadataServiceFactory>().Create(setting);
+        {            
+            var metadataService = Container.Resolve<ICDSMetadataServiceFactory>().Create(setting);
             metadataService.Message += MessageHandler;
             var entityMetadata = metadataService.GetEntityMetadata(organizationService);
             var sdkMessageMetadata = metadataService.GetMessageMetadata(organizationService);
             metadataService.Message -= MessageHandler;
 
-            var typeConverterFactory = ServiceContainer.Resolve<ITypeConverterFactory>();
+            var typeConverterFactory = Container.Resolve<ITypeConverterFactory>();
             var typeConverter = typeConverterFactory.Create(setting.TemplateLanguage);
 
             var modelService = new ProxyModelService(typeConverter);
@@ -340,7 +353,9 @@ class Program
 
     private static IEnumerable<ISettings> GetSettingsFromProxyConfigFile(string searchPath)
     {
-        var settings = ServiceContainer.Resolve<IProxySettingsService>().LoadSettings(searchPath);
+        Console.WriteLine("Searching for proxies.json in '{0}'", searchPath);
+
+        var settings = Container.Resolve<IProxySettingsService>().LoadSettings(searchPath);
 
         return settings?.Select(s => s
            .SetTemplateRelativeTo(s.ConfigurationPath)
@@ -348,8 +363,10 @@ class Program
     }
 
     private static IEnumerable<ISettings> GetSettingsFromSpklConfigFile(string searchPath)
-    {        
-        var settings = ServiceContainer.Resolve<ISpklSettingsService>().LoadSettings(searchPath);
+    {
+        Console.WriteLine("Searching for spkl.json in '{0}'", searchPath);
+
+        var settings = Container.Resolve<ISpklSettingsService>().LoadSettings(searchPath);
                
         return settings?.Select(s => s
             .SetTemplateRelativeTo(s.ConfigurationPath)

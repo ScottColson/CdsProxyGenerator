@@ -37,7 +37,7 @@ namespace CCLLC.CDS.ProxyBuilderCmd.Spkl
 
             foreach(var file in configfilePaths)
             {
-                var spklConfig = Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigFile>(File.ReadAllText(file));
+                var spklConfig = Newtonsoft.Json.JsonConvert.DeserializeObject<SpklConfigFile>(File.ReadAllText(file));
                 var setting = spklConfig.earlyboundtypes.FirstOrDefault() as IConfigSettings;
 
                 if(setting != null)

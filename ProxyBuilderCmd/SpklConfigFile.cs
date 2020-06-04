@@ -1,40 +1,26 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace CCLLC.CDS.ProxyBuilderCmd.Spkl
 {
-    public class ConfigFile
+    public class SpklConfigFile
     {       
-        public List<EarlyBoundTypeConfig> earlyboundtypes;
+        public List<SpklEarlyBoundTypeConfig> earlyboundtypes;
         
         [JsonIgnore]
         public string filePath;
 
-        public virtual void Save()
-        {
-            var file = Path.Combine(filePath, "spkl.json");
-            if (File.Exists(file))
-            {
-                File.Copy(file, file + DateTime.Now.ToString("yyyyMMddHHmmss") + ".bak");
-            }
-            File.WriteAllText(file, Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented, new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore
-            }));
-        }
-    
-        public virtual EarlyBoundTypeConfig[] GetEarlyBoundConfig(string profile)
+        public virtual SpklEarlyBoundTypeConfig[] GetEarlyBoundConfig(string profile)
         {
             if (earlyboundtypes == null)
-                return new EarlyBoundTypeConfig[] { new EarlyBoundTypeConfig(){                    
+                return new SpklEarlyBoundTypeConfig[] { new SpklEarlyBoundTypeConfig(){                    
                     entities = "account,contact",
                     classNamespace = "Proxy"
                 } };
 
-            EarlyBoundTypeConfig[] config = null;
+            SpklEarlyBoundTypeConfig[] config = null;
             if (profile == "default")
             {
                 profile = null;
