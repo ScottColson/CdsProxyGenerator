@@ -2,7 +2,7 @@
 <package>
   <metadata minClientVersion="3.3.0">
     <id>CCLLC.CDS.ProxyBuilder</id>
-    <version>0.0.2-alpha</version>
+    <version>$version$</version>
     <description>Command line tool for generating CDS proxy classes using T4 templates.</description>
     <authors>Colson Code, LLC</authors>
     <owners>Colson Code, LLC</owners>

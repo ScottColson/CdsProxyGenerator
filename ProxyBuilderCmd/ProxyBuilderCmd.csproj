@@ -129,7 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="assembly.nuspec" />
+    <None Include="ProxyBuilderCmd.nuspec" />
     <None Include="packages.config" />
     <None Include="Package\proxies.json" />
     <None Include="Package\proxybuilder.bat" />
