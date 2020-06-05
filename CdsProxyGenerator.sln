@@ -20,9 +20,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{70F76F11-E
 		docs\ReadMe.md = docs\ReadMe.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BatchFiles", "BatchFiles", "{BBB7CDE0-56F4-413E-873E-20CF0CBD9A17}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Package", "Package", "{17B57C4A-8A1E-4631-B6BB-831B28E90F55}"
 	ProjectSection(SolutionItems) = preProject
-		BatchFiles\proxybuilder.bat = BatchFiles\proxybuilder.bat
+		Package\proxies.json = Package\proxies.json
+		Package\proxybuilder.bat = Package\proxybuilder.bat
+		Package\ProxyTemplate.t4 = Package\ProxyTemplate.t4
 	EndProjectSection
 EndProject
 Global

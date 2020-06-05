@@ -20,7 +20,7 @@ namespace CCLLC.CDS.ProxyBuilderCmd
 
         string ISettings.Namespace => classNamespace ?? "Proxy";
 
-        string ISettings.TemplateFilePath => templatePath ?? "proxytemplate.tt";
+        string ISettings.TemplateFilePath => templatePath ?? "proxytemplate.t4";
 
         string ISettings.OutputPath => outputPath ?? "";
 

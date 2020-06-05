@@ -1,0 +1,36 @@
+﻿<?xml version="1.0"?>
+<package>
+  <metadata minClientVersion="3.3.0">
+    <id>CCLLC.CDS.ProxyBuilder</id>
+    <version>0.0.2-alpha</version>
+    <description>Command line tool for generating CDS proxy classes using T4 templates.</description>
+    <authors>Colson Code, LLC</authors>
+    <owners>Colson Code, LLC</owners>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/ScottColson/CdsProxyGenerator</projectUrl>
+    <tags></tags>    
+  </metadata>
+  <files>
+    <file src="Package\proxies.json" target="content\proxies.json" />
+    <file src="Package\ProxyTemplate.t4" target="content\ProxyTemplate.t4" />
+    <file src="Package\proxybuilder.bat" target="content\codgen\proxybuilder.bat" />
+    <file src="bin\Release\CmdLine.dll" target="tools\CmdLine.dll" />
+    <file src="bin\Release\Mono.TextTemplating.dll" target="tools\Mono.TextTemplating.dll" />
+    <file src="bin\Release\Microsoft.Crm.Sdk.Proxy.dll" target="tools\Microsoft.Crm.Sdk.Proxy.dll" />
+    <file src="bin\Release\Microsoft.IdentityModel.Clients.ActiveDirectory.dll" target="tools\Microsoft.IdentityModel.Clients.ActiveDirectory.dll" />
+    <file src="bin\Release\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll" target="tools\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll" />
+    <file src="bin\Release\Microsoft.Xrm.Sdk.Deployment.dll" target="tools\Microsoft.Xrm.Sdk.Deployment.dll" />
+    <file src="bin\Release\Microsoft.Xrm.Sdk.dll" target="tools\Microsoft.Xrm.Sdk.dll" />
+    <file src="bin\Release\Microsoft.Xrm.Sdk.Workflow.dll" target="tools\Microsoft.Xrm.Sdk.Workflow.dll" />
+    <file src="bin\Release\Microsoft.Xrm.Tooling.Connector.dll" target="tools\Microsoft.Xrm.Tooling.Connector.dll" />
+    <file src="bin\Release\Microsoft.Extensions.FileSystemGlobbing.dll" target="tools\Microsoft.Extensions.FileSystemGlobbing.dll" />
+    <file src="bin\Release\Newtonsoft.Json.dll" target="tools\Newtonsoft.Json.dll" />
+    <file src="bin\Release\CCLLCIoCContainer.dll" target="tools\CCLLCIoCContainer.dll" />
+    <file src="bin\Release\CCLLC.Core.ProcessModel.dll" target="tools\CCLLC.Core.ProcessModel.dll" />
+    <file src="bin\Release\CCLLCCDSSdkData.dll" target="tools\CCLLCCDSSdkData.dll" />
+    <file src="bin\Release\CCLLCCdsSdkMetadata.dll" target="tools\CCLLCCdsSdkMetadata.dll" />
+    <file src="bin\Release\CdsProxyGenerator.dll" target="tools\CdsProxyGenerator.dll" />    
+    <file src="bin\Release\proxybuilder.exe" target="tools\proxybuilder.exe" />
+  </files>
+</package>

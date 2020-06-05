@@ -129,7 +129,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="assembly.nuspec" />
     <None Include="packages.config" />
+    <None Include="Package\proxies.json" />
+    <None Include="Package\proxybuilder.bat" />
+    <None Include="Package\ProxyTemplate.t4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CdsProxyGenerator\CdsProxyGenerator.csproj">
@@ -138,7 +142,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="proxies.json" />
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
