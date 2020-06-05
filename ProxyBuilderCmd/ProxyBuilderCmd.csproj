@@ -111,6 +111,7 @@
     <Compile Include="CommandLineArgs.cs" />
     <Compile Include="ConfigSettings.cs" />
     <Compile Include="Extensions\SettingsExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Interfaces\IConfigSettings.cs" />
     <Compile Include="Interfaces\IProxySettingsService.cs" />
     <Compile Include="ProxyConfigFile.cs" />
@@ -128,7 +129,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="NewFolder1\spkl.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -139,7 +139,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="proxies.json" />
-    <None Include="spkl.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

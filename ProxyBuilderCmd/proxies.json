@@ -1,0 +1,22 @@
+{
+  "entitiesToInclude": 
+    "systemuser
+    businessunit
+    account
+    contact
+    customeraddress
+    ccllc_agent 
+    ccllc_agentauthorizedcustomer,  ccllc_agentprohibitedcustomer,  ccllc_agentrole,  ccllc_channel,  ccllc_device,
+    ccllc_location,
+    ccllc_partner,
+    ccllc_partnerworker,
+    ccllc_role,
+    ccllc_worksession,
+    ccllc_evaluatortype",
+  "actionsToInclude": "^ccllc_\\S*$",
+  "templatePath": "..\\T4Templates\\ProxyTemplate.tt",
+  "outputPath": "Proxies",
+  "classNamespace": "CCLLC.BTF.Platform.CDS",
+  "targetEndPoint": "OrganizationService",
+  "targetLanguage" : "CSharp"
+}

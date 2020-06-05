@@ -22,7 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{70F76F11-E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BatchFiles", "BatchFiles", "{BBB7CDE0-56F4-413E-873E-20CF0CBD9A17}"
 	ProjectSection(SolutionItems) = preProject
-		BatchFiles\proxygenerator.bat = BatchFiles\proxygenerator.bat
+		BatchFiles\proxybuilder.bat = BatchFiles\proxybuilder.bat
 	EndProjectSection
 EndProject
 Global

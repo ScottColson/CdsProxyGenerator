@@ -147,7 +147,8 @@ class Program
         try
         {
             var executingDirectory = Environment.CurrentDirectory;
-            var searchPath = Path.Combine(executingDirectory, "..\\..");
+            
+            var searchPath = arguments.Path ?? Path.Combine(executingDirectory, "..\\");
 
             if (arguments.Connection == null)
             {
