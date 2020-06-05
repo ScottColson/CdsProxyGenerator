@@ -1,4 +1,5 @@
-﻿using CCLLC.CDS.ProxyGenerator;
+﻿using CCLLC.CDS.ProxyBuilderCmd.Extensions;
+using CCLLC.CDS.ProxyGenerator;
 using CCLLC.CDS.Sdk.Metadata;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,8 @@ namespace CCLLC.CDS.ProxyBuilderCmd
 
         private IEnumerable<string> SplitList(string value, string defaultValue = "")
         {
-            return value?.Split(',').Select(v => v.Trim()) ?? new string[] { defaultValue };
+            value = value?.Replace(',', ' ').ColapseWhiteSpace();
+            return value?.Split(' ').Select(v => v.Trim()) ?? new string[] { defaultValue };
         }
     }
 }
