@@ -68,10 +68,10 @@ if(entity.Fields.Where(f => f.Enum != null && f.Enum.IsGlobal != true).Count() >
 
 		#pragma warning disable IDE1006 // Naming Styles
 <# foreach (var f in entity.Fields.Where(f => f.Enum != null && f.Enum.IsGlobal != true)){ #>
-		public enum <#=string.Format("e{0}", f.Enum.DisplayName)#> {<#foreach(var e in f.Enum.Items){#> <#=e.DisplayName#>=<#=e.Value#>, <#}#>}
+		public enum <#=string.Format("e{0}", f.DisplayName)#> {<#foreach(var e in f.Enum.Items){#> <#=e.DisplayName#>=<#=e.Value#>, <#}#>}
 <# 
 // Set the exposed type to the generated enum type
-f.Enum.SetType(string.Format("e{0}", f.Enum.DisplayName + "?")); #>
+f.Enum.SetType(string.Format("e{0}", f.DisplayName + "?")); #>
 <#}#>
 		#pragma warning restore IDE1006 // Naming Styles
 
@@ -95,7 +95,11 @@ f.Enum.SetType(string.Format("e{0}", f.Enum.DisplayName + "?")); #>
 		{
 			get => base.Id; 
 <# if(!entity.PrimaryKey.IsReadOnly) {#>
-			set => <#=entity.PrimaryKey.DisplayName#> = value;
+			set 
+			{
+				<#=entity.PrimaryKey.DisplayName#> = value;
+				base.Id = value;
+			}
 <#}#>
 		}
 

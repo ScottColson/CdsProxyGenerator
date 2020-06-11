@@ -2,6 +2,7 @@
 using System.Text;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using CCLLC.CDS.ProxyGenerator.Extensions;
 
 namespace CCLLC.CDS.ProxyGenerator
 {
@@ -35,7 +36,20 @@ namespace CCLLC.CDS.ProxyGenerator
                     int start = 0;
                     if (!char.IsLetter(p[0]))
                     {
-                        sb.Append("_");
+                        if (p[0].IsCurrencySymbol())
+                        {
+                            sb.Append("Currency_");
+                        }
+
+                        else if (p[0].IsPercentSymbol())
+                        {
+                            sb.Append("Percent_");
+                        }
+
+                        else
+                        {
+                            sb.Append("_");
+                        }
                     }
 
                     for (int i = start; i < p.Length; i++)

@@ -104,6 +104,7 @@
     <Compile Include="CDSMetadataService.cs" />
     <Compile Include="CDSMetadataServiceFactory.cs" />
     <Compile Include="Extensions\AttrributeMetadataExtensions.cs" />
+    <Compile Include="Extensions\CharExtensions.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />
     <Compile Include="Extensions\EntityMetadataExtensions.cs" />
     <Compile Include="Extensions\IEnumerableStringExtensions.cs" />
