@@ -10,7 +10,8 @@ namespace CCLLC.CDS.ProxyGenerator.Model
         internal string PrimaryKeyAttribute { get; }
         public string LogicalName { get; }
         public string SchemaName { get; }
-       
+        public bool IsAuditEnabled { get; }
+        
         public string DisplayName { get; }
         public string PluralName { get; }
 
@@ -38,7 +39,8 @@ namespace CCLLC.CDS.ProxyGenerator.Model
             string schemaName, 
             string displayName, 
             string pluralName, 
-            string primaryKey)
+            string primaryKey,
+            bool isAuditEnabled)
         {
             this.ProxyModel = parent;
             this.LogicalName = logicalName;
@@ -46,6 +48,7 @@ namespace CCLLC.CDS.ProxyGenerator.Model
             this.DisplayName = displayName;
             this.PluralName = pluralName;
             this.PrimaryKeyAttribute = primaryKey;
+            this.IsAuditEnabled = isAuditEnabled;
         }
 
         private void SetPrimaryKey()

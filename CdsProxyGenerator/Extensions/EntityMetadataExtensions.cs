@@ -22,5 +22,10 @@ namespace CCLLC.CDS.ProxyGenerator.Extensions
 
             return entityName + "s";
         }
+
+        public static bool IsAuditable(this EntityMetadata metadata)
+        {
+            return metadata.IsAuditEnabled?.Value ?? false;
+        }
     }
 }

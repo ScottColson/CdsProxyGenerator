@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -38,10 +39,10 @@
       <HintPath>..\packages\CCLLC.Core.ProcessModel.1.1.5\lib\net462\CCLLC.Core.ProcessModel.dll</HintPath>
     </Reference>
     <Reference Include="CCLLCCDSSdkData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=123e29a4f4f84d01, processorArchitecture=MSIL">
-      <HintPath>..\packages\CCLLC.CDS.Sdk.Data.1.1.1\lib\net462\CCLLCCDSSdkData.dll</HintPath>
+      <HintPath>..\packages\CCLLC.CDS.Sdk.Data.1.1.2\lib\net462\CCLLCCDSSdkData.dll</HintPath>
     </Reference>
     <Reference Include="CcllcCdsSdkMetadata, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7946ee95ac82e5b3, processorArchitecture=MSIL">
-      <HintPath>..\packages\CCLLC.CDS.Sdk.Metadata.0.0.10\lib\CcllcCdsSdkMetadata.dll</HintPath>
+      <HintPath>..\packages\CCLLC.CDS.Sdk.Metadata.0.0.12\lib\CcllcCdsSdkMetadata.dll</HintPath>
     </Reference>
     <Reference Include="CCLLCIocContainer, Version=2.0.0.0, Culture=neutral, PublicKeyToken=506847acdbcda1d9, processorArchitecture=MSIL">
       <HintPath>..\packages\CCLLC.Core.IocContainer.2.0.1\lib\net462\CCLLCIocContainer.dll</HintPath>
@@ -136,13 +137,13 @@
     <None Include="Package\ProxyTemplate.t4" />
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\CdsProxyGenerator\CdsProxyGenerator.csproj">
       <Project>{43242886-b758-48f0-836d-3f5f444a7d4b}</Project>
       <Name>CdsProxyGenerator</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

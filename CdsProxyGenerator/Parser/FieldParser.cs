@@ -23,7 +23,8 @@ namespace CCLLC.CDS.ProxyGenerator.Parser
                 metadata.IsCreateable(),
                 metadata.MinValue(),
                 metadata.MaxValue(),
-                metadata.MaxLength());
+                metadata.MaxLength(),
+                metadata.IsAuditable());
 
             EnumModel enumModel = null;
             if(metadata is PicklistAttributeMetadata)

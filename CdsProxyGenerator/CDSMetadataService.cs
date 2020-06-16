@@ -44,7 +44,7 @@ namespace CCLLC.CDS.ProxyGenerator
 
         public IEnumerable<EntityMetadata> GetEntityMetadata(IOrganizationService orgService)
         {
-            if(settings.EntitiesToInclude is null || settings.EntitiesToInclude.Count() == 0)
+            if(settings.EntitiesToInclude is null || settings.EntitiesToInclude.Count() == 0 || string.IsNullOrEmpty(settings.EntitiesToInclude.FirstOrDefault()))
             {
                 RaiseMessage("No entities requested...");
                 return new List<EntityMetadata>();
@@ -60,7 +60,7 @@ namespace CCLLC.CDS.ProxyGenerator
 
         public IEnumerable<SdkMessageMetadata> GetMessageMetadata(IOrganizationService orgService)
         {    
-            if(settings.ActionsToInclude is null || settings.ActionsToInclude.Count() == 0)
+            if(settings.ActionsToInclude is null || settings.ActionsToInclude.Count() == 0 || string.IsNullOrEmpty(settings.ActionsToInclude.FirstOrDefault()))
             {
                 RaiseMessage("No Sdk Messages requested...");
                 return new List<SdkMessageMetadata>();
@@ -131,11 +131,13 @@ namespace CCLLC.CDS.ProxyGenerator
                 return cache.Get<IEnumerable<string>>(CacheKey.SkdMessageNames);
 
 
-            RaiseMessage("Loading Sdk MessageNames to cache...");
+            RaiseMessage("Gathering Sdk Message Names...");
             
             var names = SdkMessageMetadataService.GetSdkMessageNames(orgService);
             cache.Add(CacheKey.SkdMessageNames, names, 300);
-            
+
+            RaiseMessage(string.Format("Added {0} Sdk Message Names to cache...", names.Count()));
+
             return names;
         }
 

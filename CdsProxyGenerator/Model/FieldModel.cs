@@ -16,6 +16,7 @@ namespace CCLLC.CDS.ProxyGenerator.Model
         public string SchemaName { get; }
         public string DisplayName { get; internal set; }
         public string PrivatePropertyName { get; }
+        public bool IsAuditEnabled { get; }
         public bool IsPrimaryKey { get; }
         public bool IsLookup { get; }
         public bool IsRequired { get; }
@@ -45,7 +46,7 @@ namespace CCLLC.CDS.ProxyGenerator.Model
         }
          
 
-        public FieldModel(EntityModel parent, string logicalName, string schemaName, string displayName, string privatePropertyName, eCdsDataType dataType, bool isPrimaryKey, bool isLookup, bool isRequired, bool isUpdatable, bool isCreateable, decimal? minimumValue, decimal? maximumValue, int? maximumLength)
+        public FieldModel(EntityModel parent, string logicalName, string schemaName, string displayName, string privatePropertyName, eCdsDataType dataType, bool isPrimaryKey, bool isLookup, bool isRequired, bool isUpdatable, bool isCreateable, decimal? minimumValue, decimal? maximumValue, int? maximumLength, bool isAuditEnabled)
         {
             this.DataType = dataType; ;
             this.EntityModel = parent;
@@ -62,6 +63,8 @@ namespace CCLLC.CDS.ProxyGenerator.Model
             this.Min = minimumValue;
             this.Max = maximumValue;
             this.MaxLength = maximumLength;
+
+            this.IsAuditEnabled = isAuditEnabled;
         }
 
 

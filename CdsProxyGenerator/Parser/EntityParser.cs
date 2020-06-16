@@ -17,7 +17,9 @@ namespace CCLLC.CDS.ProxyGenerator.Parser
                 metadata.SchemaName,
                 metadata.NormalizedName(),
                 metadata.PluralName(),
-                metadata.PrimaryIdAttribute);
+                metadata.PrimaryIdAttribute,
+                metadata.IsAuditable()
+                );
 
             var fields = metadata.Attributes               
                .Select(a => FieldParser.Parse(entityModel, a)).ToList();

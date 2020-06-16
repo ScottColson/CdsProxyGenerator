@@ -37,6 +37,8 @@ namespace CCLLC.CDS.ProxyGenerator
             proxyModel.GlobalOptionSets = globals;
             proxyModel.Messages = messages;
 
+            RaiseMessage("Generated Proxy Model...");
+
             return proxyModel;            
         }
 

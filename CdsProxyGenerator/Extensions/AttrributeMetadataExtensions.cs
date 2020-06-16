@@ -53,6 +53,11 @@ namespace CCLLC.CDS.ProxyGenerator.Extensions
             return metadata.IsValidForCreate ?? false;
         }       
 
+        public static bool IsAuditable(this AttributeMetadata metadata)
+        {
+            return metadata.IsAuditEnabled?.Value ?? false;
+        }
+
         public static int? MaxLength(this AttributeMetadata metadata)
         {
             if (metadata is StringAttributeMetadata) { return (metadata as StringAttributeMetadata).MaxLength ?? -1; }
