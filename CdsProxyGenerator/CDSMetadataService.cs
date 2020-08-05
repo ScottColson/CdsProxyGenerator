@@ -66,7 +66,7 @@ namespace CCLLC.CDS.ProxyGenerator
                 return new List<SdkMessageMetadata>();
             }
 
-            var names = GetAllSdkMessageNames(orgService);
+            var names = GetAllSdkMessageNames(orgService, settings.ActionsToInclude);
             
             names = FilterSdkMessageNames(names);
 
@@ -125,15 +125,15 @@ namespace CCLLC.CDS.ProxyGenerator
             return filteredMetadata;
         }
 
-        private IEnumerable<string> GetAllSdkMessageNames(IOrganizationService orgService)
+        private IEnumerable<string> GetAllSdkMessageNames(IOrganizationService orgService, IEnumerable<string> actionsToInclude)
         {
             if (cache.Exists(CacheKey.SkdMessageNames))
                 return cache.Get<IEnumerable<string>>(CacheKey.SkdMessageNames);
 
 
             RaiseMessage("Gathering Sdk Message Names...");
-            
-            var names = SdkMessageMetadataService.GetSdkMessageNames(orgService);
+
+            var names = SdkMessageMetadataService.GetSdkMessageNames(orgService, actionsToInclude);
             cache.Add(CacheKey.SkdMessageNames, names, 300);
 
             RaiseMessage(string.Format("Added {0} Sdk Message Names to cache...", names.Count()));

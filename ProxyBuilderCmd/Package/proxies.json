@@ -16,7 +16,7 @@
   actionsToInclude - an optional list of Sdk message names to include in the proxy generation. Multiple name separation, regex, and wildcard usage 
   as above. Defaults to no Sdk message names.
   */
-  "actionsToInclude": "^new_\\S*$",
+  "actionsToInclude": "new_actionname",
 
   /*
   actionsToExclude - an optional list of Sdk message names to specifically exclude. Multiple name separation, regex, and wildcard usage as above.
