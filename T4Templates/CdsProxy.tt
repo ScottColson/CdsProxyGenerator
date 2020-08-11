@@ -52,9 +52,9 @@ foreach (var entity in Model.Entities) {#>
 <# var filename = @"Entities\" + entity.LogicalName; #>
 <# Manager.StartFile(filename); #>
 	[EntityLogicalName("<#=entity.LogicalName#>")]
-	public partial class <#=entity.DisplayName#> : Entity
+	public partial class <#=entity.DisplayName#> : CCLLC.CDS.Sdk.EarlyBound.EntityProxy
 	{
-		public static string EntityLogicalName => "<#=entity.LogicalName#>";
+		public const string EntityLogicalName = "<#=entity.LogicalName#>";
 
 		public <#=entity.DisplayName#>()
 			: base("<#=entity.LogicalName#>") {}
@@ -68,14 +68,14 @@ if(entity.Fields.Where(f => f.Enum != null && f.Enum.IsGlobal != true).Count() >
 
 		#pragma warning disable IDE1006 // Naming Styles
 <# foreach (var f in entity.Fields.Where(f => f.Enum != null && f.Enum.IsGlobal != true)){ #>
-		public enum <#=string.Format("e{0}", f.Enum.DisplayName)#> {<#foreach(var e in f.Enum.Items){#> <#=e.DisplayName#>=<#=e.Value#>, <#}#>}
+		public enum <#=string.Format("e{0}", f.DisplayName)#> {<#foreach(var e in f.Enum.Items){#> <#=e.DisplayName#>=<#=e.Value#>, <#}#>}
 <# 
 // Set the exposed type to the generated enum type
-f.Enum.SetType(string.Format("e{0}", f.Enum.DisplayName + "?")); #>
+f.Enum.SetType(string.Format("e{0}", f.DisplayName + "?")); #>
 <#}#>
 		#pragma warning restore IDE1006 // Naming Styles
 
-		#endregion
+		#endregion Local OptionSet Enumerations
 <#}#>
 
 		#region Late Bound Field Constants
@@ -88,14 +88,18 @@ f.Enum.SetType(string.Format("e{0}", f.Enum.DisplayName + "?")); #>
 <#} // close foreach for generating field constants #>
 		}
 
-		#endregion
+		#endregion Late Bound Field Constants
 
 		[AttributeLogicalName("<#=entity.PrimaryKey.LogicalName#>")]
 		public override Guid Id
 		{
 			get => base.Id; 
 <# if(!entity.PrimaryKey.IsReadOnly) {#>
-			set => <#=entity.PrimaryKey.DisplayName#> = value;
+			set 
+			{
+				<#=entity.PrimaryKey.DisplayName#> = value;
+				base.Id = value;
+			}
 <#}#>
 		}
 
@@ -105,7 +109,7 @@ f.Enum.SetType(string.Format("e{0}", f.Enum.DisplayName + "?")); #>
 		{
 <# 
 // 
-//	Create setters and getters with appropriate type converion between the native and exposed data
+//	Create setters and getters with appropriate type conversion between the native and exposed data
 //	types. Do not create setters if the field is read only.
 //
 switch(f.Type.ConversionType){
@@ -113,9 +117,9 @@ switch(f.Type.ConversionType){
 // Getter and Setter when conversion between money and decimal value is required.
 //
 case eConversionType.MoneyValue: #>
-			get => GetAttributeValue<<#=f.Type.NativeType#>>("<#=f.LogicalName#>")?.Value; 
+			get => GetPropertyValue<<#=f.Type.NativeType#>>("<#=f.LogicalName#>")?.Value; 
 <# if(!f.IsReadOnly) {#>
-			set => SetAttributeValue("<#=f.LogicalName#>", value is null ? null : new Money((decimal)value)); 
+			set => SetPropertyValue("<#=f.LogicalName#>", value is null ? null : new Money((decimal)value)); 
 <#}#>
 <# break;#>
 <# 
@@ -123,14 +127,9 @@ case eConversionType.MoneyValue: #>
 // Getter and Setter when conversion between optionset and enum is required
 //
 case eConversionType.OptionSetEnum: #>
-			get 
-			{
-				var value = GetAttributeValue<OptionSetValue>("<#=f.LogicalName#>"); 
-				if(value is null) return null;
-				return (<#=f.Type.ExposedType#>)value.Value;
-			}
+			get => (<#=f.Type.ExposedType#>)GetPropertyValue<OptionSetValue>("<#=f.LogicalName#>")?.Value;
 <# if(!f.IsReadOnly) {#>
-			set => SetAttributeValue("<#=f.LogicalName#>", value is null ? null : new OptionSetValue((int)value)); 
+			set => SetPropertyValue("<#=f.LogicalName#>", value is null ? null : new OptionSetValue((int)value)); 
 <#}#>
 <# break; #>
 <# 
@@ -139,39 +138,17 @@ case eConversionType.OptionSetEnum: #>
 // type and the exposed type.
 //
 default:#>
-			get => GetAttributeValue<<#=f.Type.NativeType#>>("<#=f.LogicalName#>"); 
-<# if(!f.IsReadOnly) {#>
-			set => SetAttributeValue("<#=f.LogicalName#>", value); 
-<#}#>
+			get => GetPropertyValue<<#=f.Type.ExposedType#>>("<#=f.LogicalName#>"); 
+<# if(!f.IsReadOnly) {
+#>
+			set => SetPropertyValue("<#=f.LogicalName#>", value); 
+<#}
+#>
 <# break;#>
 <#} // end switch statement for getter/setter type conversion#>
 		}
+
 <#} // end foreach for field attributes #>
-
-<#
-// 
-// Create N:1 relationship proxies
-//
-foreach(var r in entity.RelationshipsManyToOne){#>
-	IEnumerable<<#=r.ReturnEntity.DisplayName#>> <#=r.SchemaName#>;
-<#} //close foreach RelationshipManyToOne #>
-
-<#
-// 
-// Create 1:N relationship proxies
-//
-foreach(var r in entity.RelationshipsOneToMany){#>
-	IEnumerable<<#=r.ReturnEntity.DisplayName#>> <#=r.SchemaName#>;
-<#} //close foreach RelationshipOneToMany #>
-
-<#
-// 
-// Create M:N relationship proxies
-//
-foreach(var r in entity.RelationshipsManyToMany){#>
-	IEnumerable<<#=r.ReturnEntity.DisplayName#>> <#=r.SchemaName#>;
-<#} //close foreach RelationshipManyToMany #>
-	
 	}
 <# Manager.EndBlock(); #>
 <#} // end foreach for entitities#>
@@ -260,6 +237,6 @@ Manager.StartFooter();#>
 <# Manager.EndBlock(); #>
 <#
 //
-// Use code block manager to write out indivvidual files. Do not generate any default output files.
+// Use code block manager to write out individual files. Do not generate any default output files.
 //
 Manager.Process(); #>

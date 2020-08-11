@@ -41,10 +41,10 @@
       <HintPath>..\packages\CCLLC.Core.ProcessModel.1.1.5\lib\net462\CCLLC.Core.ProcessModel.dll</HintPath>
     </Reference>
     <Reference Include="CCLLCCDSSdkData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=123e29a4f4f84d01, processorArchitecture=MSIL">
-      <HintPath>..\packages\CCLLC.CDS.Sdk.Data.1.1.6\lib\net462\CCLLCCDSSdkData.dll</HintPath>
+      <HintPath>..\packages\CCLLC.CDS.Sdk.Data.1.1.7\lib\net462\CCLLCCDSSdkData.dll</HintPath>
     </Reference>
     <Reference Include="CcllcCdsSdkMetadata, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7946ee95ac82e5b3, processorArchitecture=MSIL">
-      <HintPath>..\packages\CCLLC.CDS.Sdk.Metadata.1.0.0\lib\CcllcCdsSdkMetadata.dll</HintPath>
+      <HintPath>..\packages\CCLLC.CDS.Sdk.Metadata.1.0.1\lib\CcllcCdsSdkMetadata.dll</HintPath>
     </Reference>
     <Reference Include="CCLLCIocContainer, Version=2.0.0.0, Culture=neutral, PublicKeyToken=506847acdbcda1d9, processorArchitecture=MSIL">
       <HintPath>..\packages\CCLLC.Core.IocContainer.2.0.1\lib\net462\CCLLCIocContainer.dll</HintPath>
