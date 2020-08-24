@@ -8,6 +8,7 @@ namespace CCLLC.CDS.ProxyGenerator.Model
     {   
         internal ProxyModel ProxyModel { get; }
         internal string PrimaryKeyAttribute { get; }
+        internal string PrimaryNameAttribute { get; }
         public string LogicalName { get; }
         public string SchemaName { get; }
         public bool IsAuditEnabled { get; }
@@ -23,10 +24,11 @@ namespace CCLLC.CDS.ProxyGenerator.Model
             {
                 _fields = value;
                 SetPrimaryKey();
+                SetPrimaryName();
             }
         }
         public FieldModel PrimaryKey { get; private set; }
-
+        public FieldModel PrimaryName { get; private set; }
 
         public IEnumerable<RelationshipModel> RelationshipsOneToMany { get; internal set; }
         public IEnumerable<RelationshipModel> RelationshipsManyToOne { get; internal set; }
@@ -40,6 +42,7 @@ namespace CCLLC.CDS.ProxyGenerator.Model
             string displayName, 
             string pluralName, 
             string primaryKey,
+            string primaryName,
             bool isAuditEnabled)
         {
             this.ProxyModel = parent;
@@ -48,12 +51,18 @@ namespace CCLLC.CDS.ProxyGenerator.Model
             this.DisplayName = displayName;
             this.PluralName = pluralName;
             this.PrimaryKeyAttribute = primaryKey;
+            this.PrimaryNameAttribute = primaryName;
             this.IsAuditEnabled = isAuditEnabled;
         }
 
         private void SetPrimaryKey()
         {
             this.PrimaryKey = _fields?.Where(f => f.LogicalName == this.PrimaryKeyAttribute).FirstOrDefault();
+        }
+
+        private void SetPrimaryName()
+        {
+            this.PrimaryName = _fields?.Where(f => f.LogicalName == this.PrimaryNameAttribute).FirstOrDefault();
         }
         
        

@@ -10,13 +10,14 @@ namespace CCLLC.CDS.ProxyGenerator.Parser
         public static FieldModel Parse(EntityModel parent, AttributeMetadata metadata)
         {
             var fieldModel = new FieldModel(
-                parent,
+                parent,                
                 metadata.LogicalName,
                 metadata.SchemaName,
                 metadata.DisplayName(),
                 metadata.PrivatePropertyName(),
                 metadata.CdsDataType(),
                 metadata.IsPrimaryKey(),
+                metadata.IsPrimaryName(),
                 metadata.IsLookup(),
                 metadata.IsRequired(),
                 metadata.IsUpdatable(),

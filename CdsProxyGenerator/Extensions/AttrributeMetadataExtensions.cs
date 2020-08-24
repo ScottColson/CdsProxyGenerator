@@ -33,6 +33,11 @@ namespace CCLLC.CDS.ProxyGenerator.Extensions
             return metadata.IsPrimaryId ?? false;
         }
 
+        public static bool IsPrimaryName(this AttributeMetadata metadata)
+        {
+            return metadata.IsPrimaryName ?? false;
+        }
+
         public static bool IsRequired(this AttributeMetadata metadata)
         {
             return metadata.RequiredLevel?.Value == AttributeRequiredLevel.ApplicationRequired;

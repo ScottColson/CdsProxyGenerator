@@ -18,6 +18,7 @@ namespace CCLLC.CDS.ProxyGenerator.Parser
                 metadata.NormalizedName(),
                 metadata.PluralName(),
                 metadata.PrimaryIdAttribute,
+                metadata.PrimaryNameAttribute,
                 metadata.IsAuditable()
                 );
 
