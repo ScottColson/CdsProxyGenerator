@@ -55,6 +55,8 @@ foreach (var entity in Model.Entities) {#>
 	public partial class <#=entity.DisplayName#> : CCLLC.CDS.Sdk.EarlyBound.EntityProxy
 	{
 		public const string EntityLogicalName = "<#=entity.LogicalName#>";
+		public const string PrimaryIdAttribute = "<#=entity.PrimaryKey.LogicalName>";
+		public const string PrimaryNameAttribute = "<#=entity.PrimaryName.LogicalName>"
 
 		public <#=entity.DisplayName#>()
 			: base("<#=entity.LogicalName#>") {}
@@ -167,6 +169,8 @@ foreach (var message in Model.Messages) {#>
 	[RequestProxy("<#=message.SchemaName#>")]
 	public partial class <#=requestName#> : OrganizationRequest
 	{	
+		public const string SchemaName = "<#=message.SchemaName#>";
+		
 		public <#=requestName#>() 
 			: base("<#=message.SchemaName#>") {}
 
