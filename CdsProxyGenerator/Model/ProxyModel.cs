@@ -26,7 +26,7 @@ namespace CCLLC.CDS.ProxyGenerator.Model
 
         internal EntityModel GetEntityModelByLogicalName(string name)
         {
-            return this.Entities.Where(e => e.LogicalName == name).FirstOrDefault() ?? new EntityModel(this,"Entity","Entity","Entity","","",false);
+            return this.Entities.Where(e => e.LogicalName == name).FirstOrDefault() ?? new EntityModel(this,"Entity","Entity","Entity","Entities","","",false);
         }
     }
 }
