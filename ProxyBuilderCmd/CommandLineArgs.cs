@@ -17,5 +17,8 @@ public class CommandLineArgs
 
     [CommandLineParameter(Name = "Ignore Windows login", Command = "i", Required = false, Description = "Optional flag to ignore logged in windows credentials during discovery and always ask for username/password.")]
     public bool IgnoreLocalPrincipal { get; set; }
+
+    [CommandLineParameter(Name = "Use Legacy Login", Command ="l", Required = false)]
+    public bool LegacyLogin { get; set; }
 }
 
