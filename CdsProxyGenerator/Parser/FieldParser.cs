@@ -8,7 +8,7 @@ namespace CCLLC.CDS.ProxyGenerator.Parser
     public class FieldParser
     {
         public static FieldModel Parse(EntityModel parent, AttributeMetadata metadata)
-        {
+        {            
             var fieldModel = new FieldModel(
                 parent,                
                 metadata.LogicalName,
@@ -31,6 +31,10 @@ namespace CCLLC.CDS.ProxyGenerator.Parser
             if(metadata is PicklistAttributeMetadata)
             {
                 enumModel = EnumParser.Parse(fieldModel, metadata as PicklistAttributeMetadata);
+            }
+            if(metadata is MultiSelectPicklistAttributeMetadata)
+            {                        
+                enumModel = EnumParser.Parse(fieldModel, metadata as MultiSelectPicklistAttributeMetadata);
             }
             if(metadata is StateAttributeMetadata)
             {
