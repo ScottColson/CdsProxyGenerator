@@ -25,6 +25,15 @@
                         ConversionType = returnType != "OptionSetValue" ? eConversionType.OptionSetEnum : eConversionType.None
                     };
 
+                case eCdsDataType.MultiSelectPicklist:
+                    
+                    return new TypeModel
+                    {
+                        NativeType = "OptionSetValueCollection",
+                        ExposedType = "OptionSetValueCollection",
+                        ConversionType =  eConversionType.None
+                    };
+
                 case eCdsDataType.BigInt:
                 case eCdsDataType.Integer:
                     return new TypeModel

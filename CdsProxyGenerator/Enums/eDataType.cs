@@ -23,6 +23,8 @@
         Virtual = 17,
         BigInt = 18,
         ManagedProperty = 19,
-        EntityName = 20
+        EntityName = 20,
+        MultiSelectPicklist =1001
+
     }
 }

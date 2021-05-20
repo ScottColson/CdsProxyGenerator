@@ -25,6 +25,11 @@ namespace CCLLC.CDS.ProxyGenerator.Extensions
                 return eCdsDataType.Uniqueidentifier;
             }
 
+            if (metadata is MultiSelectPicklistAttributeMetadata)
+            {
+                return eCdsDataType.MultiSelectPicklist;
+            }
+
             return (eCdsDataType)(int)attributeType;
         }
 
