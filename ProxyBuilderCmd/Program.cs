@@ -152,18 +152,29 @@ class Program
 
             if (arguments.Connection == null)
             {
-                // No Connection is supplied to ask for connection on command line 
-                ServerConnection serverConnect = new ServerConnection();
-                ServerConnection.Configuration config = serverConnect.GetServerConfiguration(arguments.IgnoreLocalPrincipal);
-
-                arguments.Connection = BuildConnectionString(config);
-
-                using (var serviceProxy = new OrganizationServiceProxy(config.OrganizationUri, config.HomeRealmUri, config.Credentials, config.DeviceCredentials))
+                if (arguments.LegacyLogin)
                 {
-                    // This statement is required to enable early-bound type support.
-                    serviceProxy.EnableProxyTypes();
-                    serviceProxy.Timeout = new TimeSpan(1, 0, 0);
-                    BuildProxy(serviceProxy, searchPath);
+                    // No Connection is supplied to ask for connection on command line 
+                    ServerConnection serverConnect = new ServerConnection();
+                    ServerConnection.Configuration config = serverConnect.GetServerConfiguration(arguments.IgnoreLocalPrincipal);
+
+                    arguments.Connection = BuildConnectionString(config);
+
+                    using (var serviceProxy = new OrganizationServiceProxy(config.OrganizationUri, config.HomeRealmUri, config.Credentials, config.DeviceCredentials))
+                    {
+                        // This statement is required to enable early-bound type support.
+                        serviceProxy.EnableProxyTypes();
+                        serviceProxy.Timeout = new TimeSpan(1, 0, 0);
+                        BuildProxy(serviceProxy, searchPath);
+                    }
+                }
+                else
+                {
+                    var toolingConnector = new XrmToolingConnection();
+                    var client = toolingConnector.Connect();
+                    arguments.Connection = toolingConnector.ConnectionString;
+
+                    BuildProxy(client, searchPath);
                 }
             }
 
